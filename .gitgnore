@@ -1,0 +1,18 @@
+# Virtual environments
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Training files (do not deploy)
+Fake.csv
+True.csv
+train_model.py
+
+# System files
+.DS_Store
+Thumbs.db
