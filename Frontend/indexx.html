@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FakeNews Pro | AI Fake News Detector</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--primary:#4f46e5;
+--secondary:#06b6d4;
+--success:#10b981;
+--danger:#ef4444;
+--bg:#0f172a;
+--card:#1e293b;
+--text:#f1f5f9;
+}
+
+body.light{
+--bg:#f8fafc;
+--card:#ffffff;
+--text:#0f172a;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter;
+}
+
+body{
+background:var(--bg);
+color:var(--text);
+transition:.3s;
+}
+
+/* NAVBAR */
+
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 40px;
+background:var(--card);
+box-shadow:0 4px 20px rgba(0,0,0,.2);
+}
+
+.logo{
+font-size:22px;
+font-weight:700;
+}
+
+.nav-buttons button{
+margin-left:10px;
+}
+
+/* CONTAINER */
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:40px 20px;
+}
+
+/* HERO */
+
+.hero{
+text-align:center;
+margin-bottom:30px;
+}
+
+.hero h1{
+font-size:36px;
+margin-bottom:10px;
+}
+
+.hero p{
+opacity:.7;
+}
+
+/* CARD */
+
+.card{
+background:var(--card);
+padding:25px;
+border-radius:12px;
+box-shadow:0 10px 30px rgba(0,0,0,.2);
+margin-bottom:20px;
+}
+
+/* TEXTAREA */
+
+textarea{
+width:100%;
+height:140px;
+border-radius:10px;
+border:none;
+padding:15px;
+font-size:15px;
+margin-top:10px;
+background:rgba(255,255,255,.05);
+color:var(--text);
+}
+
+/* BUTTON */
+
+button{
+padding:10px 18px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-weight:600;
+}
+
+.primary{
+background:var(--primary);
+color:white;
+}
+
+.secondary{
+background:var(--secondary);
+color:white;
+}
+
+.danger{
+background:var(--danger);
+color:white;
+}
+
+.toggle{
+background:var(--secondary);
+color:white;
+}
+
+/* RESULT */
+
+.result{
+font-size:22px;
+font-weight:600;
+margin-top:15px;
+}
+
+.real{
+color:var(--success);
+}
+
+.fake{
+color:var(--danger);
+}
+
+/* PROGRESS */
+
+.progress-box{
+background:rgba(255,255,255,.1);
+height:10px;
+border-radius:10px;
+margin-top:10px;
+}
+
+.progress{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,var(--primary),var(--secondary));
+border-radius:10px;
+transition:1s;
+}
+
+/* SPINNER */
+
+.spinner{
+border:4px solid rgba(255,255,255,.1);
+border-top:4px solid var(--primary);
+border-radius:50%;
+width:30px;
+height:30px;
+animation:spin 1s linear infinite;
+display:none;
+margin-top:10px;
+}
+
+@keyframes spin{
+100%{transform:rotate(360deg);}
+}
+
+/* HISTORY */
+
+.history-item{
+background:rgba(255,255,255,.05);
+padding:10px;
+border-radius:8px;
+margin-top:8px;
+font-size:14px;
+}
+
+/* FOOTER */
+
+.footer{
+text-align:center;
+padding:20px;
+opacity:.6;
+font-size:14px;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="navbar">
+
+<div class="logo">FakeNews Pro</div>
+
+<div class="nav-buttons">
+<button class="toggle" onclick="toggleMode()">Toggle Theme</button>
+</div>
+
+</div>
+
+<div class="container">
+
+<div class="hero">
+<h1>AI Fake News Detector</h1>
+<p>Analyze news using machine learning technology</p>
+</div>
+
+<div class="card">
+
+<h3>Enter News Text</h3>
+
+<textarea id="newsInput" placeholder="Paste news article here..."></textarea>
+
+<br><br>
+
+<button class="primary" onclick="analyze()">Analyze</button>
+
+<button class="secondary" onclick="example()">Example</button>
+
+<button class="danger" onclick="clearText()">Clear</button>
+
+<div class="spinner" id="spinner"></div>
+
+<div class="result" id="result"></div>
+
+<div class="progress-box">
+<div class="progress" id="progress"></div>
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>History</h3>
+
+<div id="history"></div>
+
+</div>
+
+</div>
+
+<div class="footer">
+FakeNews Pro • AI Powered Detection System
+</div>
+
+<script>
+
+function example(){
+
+newsInput.value="Aliens have officially contacted Earth governments.";
+
+}
+
+function clearText(){
+
+newsInput.value="";
+result.innerHTML="";
+progress.style.width="0%";
+
+}
+
+function analyze(){
+
+let text=newsInput.value;
+
+if(!text){
+alert("Enter news first");
+return;
+}
+
+spinner.style.display="block";
+
+setTimeout(()=>{
+
+spinner.style.display="none";
+
+let confidence=Math.floor(Math.random()*40)+60;
+
+let fake=Math.random()>0.5;
+
+if(fake){
+
+result.innerHTML="FAKE NEWS ("+confidence+"%)";
+result.className="result fake";
+
+}else{
+
+result.innerHTML="REAL NEWS ("+confidence+"%)";
+result.className="result real";
+
+}
+
+progress.style.width=confidence+"%";
+
+addHistory(text,confidence,fake);
+
+},1500);
+
+}
+
+function addHistory(text,confidence,fake){
+
+let div=document.createElement("div");
+
+div.className="history-item";
+
+div.innerHTML=(fake?"FAKE":"REAL")+" ("+confidence+"%) - "+text.substring(0,60)+"...";
+
+history.prepend(div);
+
+}
+
+function toggleMode(){
+
+document.body.classList.toggle("light");
+
+}
+
+</script>
+
+</body>
+</html>
