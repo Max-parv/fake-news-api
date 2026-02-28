@@ -21,6 +21,10 @@ async function analyzeNews() {
             body: JSON.stringify({ text: text })
         });
 
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+
         const data = await response.json();
 
         if (data.error) {
@@ -34,5 +38,6 @@ async function analyzeNews() {
     } catch (error) {
         predictionElement.innerText = "Server error. Please try again.";
         confidenceElement.innerText = "";
+        console.error("Error:", error);
     }
 }
